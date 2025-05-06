@@ -344,7 +344,13 @@
   </footer>
 
   <script>
-    alert("Selamat datang di EMAN! Untuk pengalaman terbaik, gunakan perangkat dengan resolusi tinggi.");
+    let nama = prompt("wait, sebelum lanjut gw pengen tau nama loe siapa?")
+    if (nama == null || nama == "") {
+      alert("Gak mau kasih tau? Ya udah deh, lanjut aja :)")
+    } else {
+      alert("hello " + nama + ", welcome yaa :D")
+      alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
+    }
     let currentLang = 'en';
     const translations = {
       'Tentang Kami': 'About Us',
