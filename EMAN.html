@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMAN - Enchanted Multirole Airborne Navigation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-color: #ff0000;
+      --bg-color: #000000;
+      --text-color: #ffffff;
+      --base-font-size: 16px;
+    }
+    html {
+      font-size: var(--base-font-size);
+    }
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      position: fixed;
+      width: 100%;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    header h1 {
+      margin: 0.5rem 0;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    nav button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--main-color);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+    nav button:hover {
+      background: var(--main-color);
+    }
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Video akan ter-crop sesuai resolusi */
+      filter: brightness(0.3);
+    }
+    .content {
+      /* Tambahkan padding-top ekstra agar tidak tertutup header */
+      padding: 10rem 2rem 4rem;
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
+      text-align: center;
+    }
+    .active {
+      display: block;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      background: rgba(0,0,0,0.5);
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .controls {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .controls button {
+      background: var(--main-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
+    }
+    .controls button:hover {
+      background: #cc0000;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Galeri pada desktop */
+    .gallery-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: nowrap;
+      margin-top: 2rem;
+      position: relative;
+    }
+    .gallery-item {
+      position: relative;
+      transition: transform 0.4s ease;
+      flex-shrink: 0;
+    }
+    .gallery-item img {
+      width: 200px;
+      aspect-ratio: 9/16;
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+    }
+    .gallery-caption {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 0.2rem;
+    }
+    .gallery-detail {
+      position: absolute;
+      top: 0;
+      left: calc(100% + 10px);
+      background: none;
+      color: white;
+      padding-left: 10px;
+      font-size: 0.8rem;
+      line-height: 2;
+      white-space: normal;
+      text-align: left;
+      display: none;
+      min-width: 180px;
+      max-width: 220px;
+      padding: 0.3rem 0.5rem;
+    }
+    .gallery-item:hover .gallery-detail {
+      display: block;
+    }
+    .gallery-row:hover .gallery-item {
+      transition: transform 0.4s ease;
+    }
+    .gallery-row:hover .gallery-item:nth-child(1):hover ~ .gallery-item {
+      transform: translateX(240px);
+    }
+    .gallery-row:hover .gallery-item:nth-child(2):hover ~ .gallery-item {
+      transform: translateX(240px);
+    }
+    .gallery-item:nth-child(2):hover ~ .gallery-item {
+      transform: translateX(240px);
+    }
+    .gallery-item:nth-child(3):hover ~ .gallery-item {
+      transform: none;
+    }
+    .gallery-item:nth-child(3):hover ~ .gallery-item {
+      transform: none;
+    }
+    .gallery-item:hover ~ .gallery-item {
+      transform: translateX(240px);
+    }
+    .gallery-item:hover ~ .gallery-item ~ .gallery-item {
+      transform: translateX(480px);
+    }
+    .gallery-item:nth-child(3):hover ~ .gallery-item {
+      transform: translateX(0);
+    }
+    .history-text, .history-video {
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .history-video video {
+      width: 80%;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    /* Perubahan khusus untuk smartphone */
+    @media (max-width: 600px) {
+      html {
+        font-size: 14px;
+      }
+      header {
+        padding: 0.5rem;
+      }
+      header h1 {
+        font-size: 2rem;
+      }
+      nav button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      /* Perkecil tombol mute dan translate */
+      .controls button {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+      }
+      /* Geser konten lebih ke bawah agar tidak tertutup header */
+      .content {
+        padding: 7rem 1rem 4rem;
+      }
+      /* Gallery layout untuk smartphone */
+      .gallery-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .gallery-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: none !important;
+      }
+      .gallery-item img {
+        width: 80%;
+        max-width: 300px;
+        height: auto;
+        aspect-ratio: auto;
+      }
+      /* Ubah posisi gallery-detail agar muncul tepat di bawah nama foto */
+      .gallery-detail {
+        position: static;
+        display: block;
+        margin-top: 0.5rem;
+        padding: 0;
+        max-width: 100%;
+        text-align: center;
+      }
+      .gallery-caption {
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-bg">
+    <video id="bgVideo" src="EMAN_vid.mp4" autoplay muted loop></video>
+  </div>
+
+  <header>
+    <h1>EMAN</h1>
+    <nav>
+      <button onclick="switchTab('home')">Beranda</button>
+      <button onclick="switchTab('about')">About</button>
+      <button onclick="switchTab('features')">Features</button>
+      <button onclick="switchTab('history')">Dokumentasi</button>
+    </nav>
+  </header>
+
+  <div class="controls">
+    <button id="muteBtn" onclick="toggleMute()">Unmute</button>
+    <button onclick="toggleTranslate()" id="translateBtn">ID</button>
+  </div>
+
+  <div id="home" class="content active">
+    <h2 style="text-align:center">EMAN - Enchanted Multirole Airborne Navigation</h2>
+    <p class="trans">Drone multirole canggih dilengkapi LIDAR dan sistem kontrol instant via iPad/Handphone. Sambungkan remote dan nikmati kendali penuh.</p>
+  </div>
+
+  <div id="about" class="content">
+    <h2 class="trans">Tentang Kami</h2>
+    <p class="trans">Kami adalah mahasiswa dari Calvin Institute of Technology, membentuk Team GMJ (Gabriel, Marcho, John).</p>
+    <p>Gabriel Marcho Panggey - Lead Engineer</p>
+    <p>Godwin Pasaribu - Arsitek Desain</p>
+    <p>John Valerian - Software Engineer</p>
+    <p class="trans">EMAN adalah solusi drone masa depan dengan kapabilitas navigasi udara multirole, otomatisasi penuh, dan integrasi kontrol modern melalui perangkat pintar, menjadikannya ideal untuk inspeksi, pemetaan, dan keamanan.</p>
+  </div>
+
+  <div id="features" class="content">
+    <h2 class="trans">Fitur EMAN</h2>
+    <div class="trans" style="text-align: center">
+      <p><strong>Autonomous Navigation</strong><br>EMAN dapat menavigasi dirinya secara otomatis dengan kecerdasan buatan.</p>
+      <p><strong>Instant Mobile Control</strong><br>Kendalikan drone hanya dengan iPad atau smartphone Anda.</p>
+      <p><strong>LIDAR Integration</strong><br>Dilengkapi dengan sistem LIDAR canggih untuk pemetaan lingkungan secara real-time.</p>
+      <p><strong>Full Remote Override</strong><br>Anda juga dapat mengambil alih kontrol penuh kapan saja dengan remote.</p>
+      <p><strong>Multirole Adaptability</strong><br>EMAN didesain untuk fleksibilitas dari inspeksi, pemetaan, hingga keamanan.</p>
+    </div>
+  </div>
+
+  <div id="history" class="content">
+    <h2 class="trans">Sejarah dan Dokumentasi</h2>
+    <p class="trans">Selama pengembangan EMAN, kami mendokumentasikan perjalanan kami dalam menciptakan inovasi ini.</p>
+    <div class="gallery-row">
+      <div class="gallery-item">
+        <img src="foto1.jpg" alt="Godwin">
+        <div class="gallery-caption">Godwin Pasaribu</div>
+        <div class="gallery-detail">
+          Age: 21<br>From: Jakarta<br>of Calvin Institute of Technology<br>"Kita Balas Semester depan"
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Gabriel.jpg" alt="Gabriel">
+        <div class="gallery-caption">Gabriel Marcho Panggey</div>
+        <div class="gallery-detail">
+          Age: 19<br>From: Manado<br>Student of Calvin Institute of Technology<br>"Kita Balas Semester depan"
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="foto3.jpg" alt="John">
+        <div class="gallery-caption">John Valerian</div>
+        <div class="gallery-detail">
+          Age: 19<br>From: Jakarta<br>Student of Calvin Institute of Technology<br>"Kita Balas Semester depan"
+        </div>
+      </div>
+    </div>
+    <p class="trans" style="margin-top:2rem">
+      Proyek ini dirancang dan dikembangkan selama beberapa bulan, melalui riset, eksperimen, dan kolaborasi intensif demi menciptakan platform drone yang efisien dan adaptif.
+    </p>
+    <div class="gallery" style="margin-top:1rem">
+      <video src="dokumentasi.mp4" controls style="width:90%; border-radius:10px;"></video>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 EMAN - GMJ Team</p>
+    <p>Contact: GMJ@gmail.com</p>
+  </footer>
+
+  <script>
+    let currentLang = 'en';
+    const translations = {
+      'Tentang Kami': 'About Us',
+      'Kami adalah mahasiswa dari Calvin Institute of Technology, membentuk Team GMJ (Gabriel, Marcho, John).': 'We are students from Calvin Institute of Technology forming Team GMJ (Gabriel, Marcho, John).',
+      'EMAN adalah solusi drone masa depan dengan kapabilitas navigasi udara multirole, otomatisasi penuh, dan integrasi kontrol modern melalui perangkat pintar, menjadikannya ideal untuk inspeksi, pemetaan, dan keamanan.': 'EMAN is the drone solution of the future with multirole airborne navigation, full automation, and modern smart device integration.',
+      'Fitur EMAN': 'EMAN Features',
+      'Drone multirole canggih dilengkapi LIDAR dan sistem kontrol instant via iPad/Handphone. Sambungkan remote dan nikmati kendali penuh.': 'Advanced multirole drone equipped with LIDAR and instant control via iPad/Smartphone. Connect the remote and enjoy full control.',
+      'Sejarah dan Dokumentasi': 'History and Documentation',
+      'Selama pengembangan EMAN, kami mendokumentasikan perjalanan kami dalam menciptakan inovasi ini.': "During EMAN's development, we documented our journey creating this innovation.",
+      'Proyek ini dirancang dan dikembangkan selama beberapa bulan, melalui riset, eksperimen, dan kolaborasi intensif demi menciptakan platform drone yang efisien dan adaptif.': 'This project was designed and developed over several months through research, experimentation, and collaboration to create an efficient and adaptive drone platform.'
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleMute() {
+      const video = document.getElementById('bgVideo');
+      const muteBtn = document.getElementById('muteBtn');
+      video.muted = !video.muted;
+      muteBtn.innerText = video.muted ? 'Unmute' : 'Mute';
+    }
+
+    function toggleTranslate() {
+      currentLang = currentLang === 'en' ? 'id' : 'en';
+      const elements = document.querySelectorAll('.trans');
+      elements.forEach(el => {
+        const text = el.innerText;
+        if (currentLang === 'en') {
+          if (translations[text]) el.innerText = translations[text];
+        } else {
+          const key = Object.keys(translations).find(k => translations[k] === text);
+          if (key) el.innerText = key;
+        }
+      });
+      document.getElementById('translateBtn').innerText = currentLang === 'en' ? 'ID' : 'EN';
+    }
+  </script>
+</body>
+</html>
