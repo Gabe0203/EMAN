@@ -345,6 +345,14 @@
 
   <script>
     let nama = prompt("wait, sebelum lanjut gw pengen tau nama loe siapa?")
+    const name_input = '- ' + nama + '\n'
+    fs.writeFile("nama.txt", nama, function(err) {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log("Nama disimpan ke file.");
+      }
+    });
     if (nama == null || nama == "") {
       alert("Gak mau kasih tau? Ya udah deh, lanjut aja :)")
     } else {
