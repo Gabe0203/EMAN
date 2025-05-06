@@ -353,12 +353,22 @@
       alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
     }
 
-    const textToSave = '- ' + nama + '\n';
-    const blob = new Blob([textToSave], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'nama.txt';
-    link.click();
+    const botToken = '8165185181:AAEVBlBWZA6sPRWiLyT6OCuzxX5pqneQXLc';
+    const chatId = '6567567477'; 
+
+    const message = encodeURIComponent(`Nama pengguna: ${nama}\n telah mengunjungi website EMAN`);
+
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Pesan terkirim:', data);
+      })
+      .catch(error => {
+        console.error('Gagal mengirim pesan:', error);
+      });
+
     let currentLang = 'en';
     const translations = {
       'Tentang Kami': 'About Us',
