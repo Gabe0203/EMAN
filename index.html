@@ -345,15 +345,18 @@
 
   <script>
     let nama = prompt("wait, sebelum lanjut gw pengen tau nama loe siapa?")
+    if (nama == null || nama == "") {
+      alert("Gak mau kasih tau? Ya udah deh, lanjut aja :)")
+      alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
+    } else {
+      alert("hello " + nama + ", welcome yaa :D")
+      alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
+    }
     const name_input = '- ' + nama + '\n'
     fs.writeFile("nama.txt", nama, function(err) {
       if (err) {
-        alert("Gak mau kasih tau? Ya udah deh, lanjut aja :)")
-        alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
         console.error(err);
       } else {
-        alert("hello " + nama + ", welcome yaa :D")
-        alert("ehiya, doain yaa biar Trio IEE bisa lulus bareng angkatan 24 :D");
         console.log("Nama disimpan ke file.");
       }
     });
